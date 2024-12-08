@@ -49,7 +49,7 @@ st.title("🩺 **AGAD: Automated Gallstone Analysis and Detection** 🩺")
 st.markdown("""
     **AGAD** is an **AI-powered classification tool** that leverages **YOLOv11**, a state-of-the-art deep learning model, to detect gallstones in **ultrasound images**.
 
-    Upon uploading an image, the app classifies it into two categories:
+    Upon uploading an image make sure that it is a gallbladder ultrasound image, the app classifies it into two categories:
     - **"Gallstones Detected"**, with the average detection confidence displayed
     - **"No Gallstones Detected"**
 
