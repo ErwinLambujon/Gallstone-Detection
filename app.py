@@ -6,34 +6,27 @@ from PIL import Image
 from io import BytesIO
 from ultralytics import YOLO
 
-
-# Load YOLO model
 @st.cache_resource
 def load_model():
     try:
-        return YOLO("best.pt")  # Path to the YOLO model
+        return YOLO("best.pt")
     except Exception as e:
         st.error(f"Error loading the model: {e}")
         return None
 
-
 model = load_model()
 
-# Custom rendering function to remove confidence scores
 def render_without_confidence(image, boxes, class_names):
-
     for box in boxes:
-        # Get bounding box coordinates and class ID
-        x1, y1, x2, y2 = map(int, box.xyxy[0])  # Bounding box coordinates
-        class_id = int(box.cls[0])  # Class ID
-        label = class_names[class_id]  # Get class name
+        x1, y1, x2, y2 = map(int, box.xyxy[0])
+        class_id = int(box.cls[0])
+        label = class_names[class_id]
 
-        # Draw bounding box and label (without confidence score)
-        color = (0, 255, 0)  # Use green for bounding boxes
-        cv2.rectangle(image, (x1, y1), (x2, y2), color, 2)  # Draw rectangle
+        color = (0, 255, 0)
+        cv2.rectangle(image, (x1, y1), (x2, y2), color, 2)
         cv2.putText(
             image,
-            label,  # Only the class name
+            label,
             (x1, y1 - 10),
             cv2.FONT_HERSHEY_SIMPLEX,
             0.5,
@@ -43,8 +36,6 @@ def render_without_confidence(image, boxes, class_names):
         )
     return image
 
-
-# Streamlit UI
 st.title("🩺 **AGAD: Automated Gallstone Analysis and Detection** 🩺")
 st.markdown("""
     **AGAD** is an **AI-powered classification tool** that leverages **YOLOv11**, a state-of-the-art deep learning model, to detect gallstones in **ultrasound images**.
@@ -104,63 +95,55 @@ with st.expander("Privacy Policy"):
     - Address: 084 B. Aranas Extension Cebu City
     """)
 
-
-# Upload an image
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
-    # Read the image
     image = Image.open(uploaded_file).convert("RGB")
     st.image(image, caption="Uploaded Image", use_column_width=True)
 
-    # Convert PIL image to OpenCV format
     img_array = np.array(image)
     img_array = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
 
     # Perform detection
     st.write("Detecting gallstones...")
-    with torch.no_grad():  # Disable gradient computation for inference
-        results = model(img_array)  # Run YOLO detection
+    with torch.no_grad():
+        results = model(img_array)
 
-    # Process and render results
     if results:
-        # Get the first result (assuming one image in the batch)
         result = results[0]
 
-        # Access bounding box data and class names
-        detections = result.boxes  # Bounding box data
-        class_names = result.names  # Class names
+        detections = result.boxes
+        class_names = result.names
 
         if len(detections) > 0:
-            # Calculate average confidence
-            confidences = detections.conf.cpu().numpy()  # Extract confidence values
-            avg_confidence = np.mean(confidences) * 100  # Convert to percentage
+            confidences = detections.conf.cpu().numpy()
+            avg_confidence = np.mean(confidences) * 100
             caption = f"Gallstones Detected - Average Confidence: {avg_confidence:.2f}%"
 
-            # Render the results without confidence scores
             detected_img = render_without_confidence(img_array.copy(), detections, class_names)
+
+            detected_img = cv2.cvtColor(detected_img, cv2.COLOR_BGR2RGB)
+
+            st.image(detected_img, caption=caption, use_column_width=True)
+
+            st.write("Download the detection result:")
+            detected_pil = Image.fromarray(detected_img)
+            buf = BytesIO()
+            detected_pil.save(buf, format="JPEG")
+            byte_im = buf.getvalue()
+            st.download_button(
+                label="Download Image",
+                data=byte_im,
+                file_name="detection_result.jpg",
+                mime="image/jpeg",
+            )
         else:
-            # No detections case
             detected_img = img_array.copy()
             caption = "No Gallstones Detected"
 
-        # Convert image to RGB for display
-        detected_img = cv2.cvtColor(detected_img, cv2.COLOR_BGR2RGB)
+            detected_img = cv2.cvtColor(detected_img, cv2.COLOR_BGR2RGB)
 
-        # Display the result
-        st.image(detected_img, caption=caption, use_column_width=True)
+            st.image(detected_img, caption=caption, use_column_width=True)
 
-        # Allow the user to download the resulting image
-        st.write("Download the detection result:")
-        detected_pil = Image.fromarray(detected_img)
-        buf = BytesIO()
-        detected_pil.save(buf, format="JPEG")
-        byte_im = buf.getvalue()
-        st.download_button(
-            label="Download Image",
-            data=byte_im,
-            file_name="detection_result.jpg",
-            mime="image/jpeg",
-        )
     else:
         st.error("No results returned from the model!")
