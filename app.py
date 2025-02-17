@@ -40,7 +40,7 @@ st.title("🩺 **AGDC: Automated Gallstone Detection and Classification** 🩺")
 st.markdown("""
     **AGDC** is an **AI-powered tool** that leverages **YOLOv11**, a state-of-the-art deep learning model, to detect and classify gallstones in **gallbladder ultrasound images**.
 
-    Upon uploading an image make sure that it is a gallbladder ultrasound image, the app classifies it into two categories:
+    Upon uploading an image make sure that it is a gallbladder ultrasound image, the model classifies it into two categories:
     - **"Gallstones Detected"**, with the average detection confidence displayed
     - **"No Gallstones Detected"**
 
