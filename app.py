@@ -49,7 +49,7 @@ st.markdown("""
 
 with st.expander("Privacy Policy"):
     st.write("""
-    **Effective Date:** [Insert Date]
+    **Effective Date:** December 7, 2024
     
     At AGAD, we are committed to protecting your privacy and the confidentiality of your personal information. This Privacy Policy explains how we collect, use, and protect the data you provide when using our automated gallstone detection tool.
     
