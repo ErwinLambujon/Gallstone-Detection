@@ -79,7 +79,7 @@ with st.expander("Privacy Policy"):
     - **Access**: Request access to the images and results you have uploaded.
     - **Delete**: Request that we delete any data we have processed related to you.
 
-    If you wish to exercise these rights, please contact us at [contact email or phone number].
+    If you wish to exercise these rights, please contact us at erwin.lambujon@cit.edu.
 
     ### 7. Third-Party Links
     Our service may contain links to third-party websites or services. We are not responsible for the privacy practices of these third-party sites. Please review the privacy policies of any third-party sites you visit.
