@@ -147,3 +147,10 @@ if uploaded_file is not None:
 
     else:
         st.error("No results returned from the model!")
+
+st.markdown("""
+### 📝 Provide Your Feedback
+We value your insights! Please help us improve **AGDC** by filling out our usability testing form. Click the link below to share your experience:
+
+[**👉 Fill out the form**](https://docs.google.com/forms/d/e/1FAIpQLSfjFAEA6hvM66nl-5KkNL3HyTO2gKarKATFsuuY7GI7paj2WQ/viewform?usp=header)
+""", unsafe_allow_html=True)
